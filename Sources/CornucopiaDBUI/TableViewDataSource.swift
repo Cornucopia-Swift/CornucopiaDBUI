@@ -10,7 +10,9 @@ private var logger = OSLog(subsystem: "de.vanille.Cornucopia.DBUI", category: "T
 
 public extension CornucopiaDBUI {
 
-    /// A Database-driven data source that can drive a UITableView
+    /// A Database-driven data source for a UITableView.
+    /// NOTE: Classic-style editing is no longer supported. This is better handled
+    /// via swipe actions in the `UITableViewDelegate`.
     class TableViewDataSource<CELLTYPE: UITableViewCell & ViaModelConfigurable,
                                    HEADERTYPE: UITableViewHeaderFooterView & ViaModelConfigurable>: ViewDataSource, UITableViewDataSource {
 
@@ -62,48 +64,7 @@ public extension CornucopiaDBUI {
             return cell
         }
 
-        #if false
-        public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-
-            switch kind {
-                case UICollectionView.elementKindSectionHeader:
-                    guard let v = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as? HEADERTYPE else {
-                        fatalError("Can't get a \(HEADERTYPE.self) as supplementary view of kind \(kind) for indexPath \(indexPath)")
-                    }
-                    let groupName = self.mappings.group(forSection: UInt(indexPath.section)) ?? "<untitled group>"
-                    v.configure(groupName as! HEADERTYPE.MODELTYPE)
-                    return v
-
-                default:
-                    os_log(.debug, "Unsupported reusable kind '%s'", kind)
-            }
-            return UICollectionReusableView()
-        }
-        #endif
-
-        public func indexTitles(for collectionView: UICollectionView) -> [String]? {
-            guard self.mappings.numberOfSections() > self.sectionThresholdForIndexAppearance else { return nil }
-            guard self.mappings.numberOfItemsInAllGroups() > self.itemThresholdForIndexAppearance else { return nil }
-            return self.mappings.allGroups.map { String($0.first!) }
-        }
-
-        public func collectionView(_ collectionView: UICollectionView, indexPathForIndexTitle title: String, at index: Int) -> IndexPath {
-            for (index, element) in self.mappings.allGroups.enumerated() {
-                let firstCharacter = String(element.first!)
-                if firstCharacter == title {
-                    return IndexPath(item: 0, section: index)
-                }
-            }
-            return IndexPath(item: 0, section: 0)
-        }
-
-        public func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool { true }
-        public func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-            print("TODO: move item at \(sourceIndexPath) to \(destinationIndexPath)")
-        }
-
         //MARK: - Internal
-
         override func updateUserInterface(notifications: [Notification]) -> Bool {
             guard self.tableView.window != nil else {
                 // don't bother updating animated, if we're not visible

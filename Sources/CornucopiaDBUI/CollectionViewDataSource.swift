@@ -98,7 +98,7 @@ public extension CornucopiaDBUI {
             print("TODO: move item at \(sourceIndexPath) to \(destinationIndexPath)")
         }
 
-        //MARK: - Internal
+        //MARK: Internal
 
         override func updateUserInterface(notifications: [Notification]) -> Bool {
             guard self.collectionView.window != nil else {
