@@ -113,9 +113,11 @@ public extension CornucopiaDBUI {
             os_log(.debug, log: logger, "View '%s' Populate Mappings end", self.mappings.view)
         }
 
-        // Subclasses should overwrite this implementation and return `true`, if they're implicitly updating the mappings by calling `getChanges` on the view connection.
-        func updateUserInterface(notifications: [Notification]) -> Bool {
-            return false
+        // Subclasses should provide this call. If you override it, make sure to either call the base implementation, or update the mappings manually within this call (i.e. by calling `getChanges` on the view connection).
+        func updateUserInterface(notifications: [Notification]) {
+            self.connection.read { t in
+                self.mappings.update(with: t)
+            }
         }
     }
 }
@@ -123,14 +125,15 @@ public extension CornucopiaDBUI {
 extension CornucopiaDBUI.ViewDataSource {
 
     @objc func onDatabaseModified(notification: Notification) {
-        os_log(.debug, log: logger, "View '%s' Update Mappings start", self.mappings.view)
         let notifications = self.connection.beginLongLivedReadTransaction()
-        let didQueryChanges = self.updateUserInterface(notifications: notifications)
-        if !didQueryChanges {
-            self.connection.read {
-                self.mappings.update(with: $0)
-            }
+        guard notifications.count > 0 else {
+            os_log(.debug, log: logger, "View '%s', nothing to update.", self.mappings.view)
+            return
         }
+        let snapshot = self.mappings.snapshotOfLastUpdate
+        os_log(.debug, log: logger, "View '%s' Update Mappings start", self.mappings.view)
+        self.updateUserInterface(notifications: notifications)
+        assert(self.mappings.snapshotOfLastUpdate > snapshot, "Fails here, if the mappings were not updated within the implementation of `updateUserInterface`.")
         os_log(.debug, log: logger, "View '%s' Update Mappings end", self.mappings.view)
     }
 }

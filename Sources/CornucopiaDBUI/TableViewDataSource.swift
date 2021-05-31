@@ -65,14 +65,14 @@ public extension CornucopiaDBUI {
         }
 
         //MARK: - Internal
-        override func updateUserInterface(notifications: [Notification]) -> Bool {
+        override func updateUserInterface(notifications: [Notification]) {
             guard self.tableView.window != nil else {
+                self.connection.read { self.mappings.update(with: $0) }
                 // don't bother updating animated, if we're not visible
                 self.tableView.reloadData()
-                return false // caller needs to update mappings
+                return
             }
             self.animateDatabaseUpdates(notifications: notifications)
-            return true
         }
     }
 }
