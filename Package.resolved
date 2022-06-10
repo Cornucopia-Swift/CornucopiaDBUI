@@ -1,0 +1,43 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CornucopiaDB",
+        "repositoryURL": "https://github.com/Cornucopia-Swift/CornucopiaDB",
+        "state": {
+          "branch": "master",
+          "revision": "b5239d2e32383634b12e7caeac0d63511fd8f029",
+          "version": null
+        }
+      },
+      {
+        "package": "MessagePacker",
+        "repositoryURL": "https://github.com/hirotakan/MessagePacker",
+        "state": {
+          "branch": null,
+          "revision": "d60363742752adc3e9efdf57dc26317945d0d2f4",
+          "version": "0.4.6"
+        }
+      },
+      {
+        "package": "Swift-YapDatabase",
+        "repositoryURL": "https://github.com/mickeyl/SwiftYapDatabase",
+        "state": {
+          "branch": "master",
+          "revision": "e1befb00a014fa75721633950e100dddd343f496",
+          "version": null
+        }
+      },
+      {
+        "package": "ULID.swift",
+        "repositoryURL": "https://github.com/yaslab/ULID.swift",
+        "state": {
+          "branch": null,
+          "revision": "309acd503a35fc95650bf45d23cca2a3e24bad19",
+          "version": "1.2.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
